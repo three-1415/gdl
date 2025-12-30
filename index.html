@@ -191,7 +191,7 @@ async function prepareGameAssets() {
 
 prepareGameAssets().then(() => {
   console.log("Instantiating UnityLoader...");
-  var gameInstance = UnityLoader.instantiate("gameContainer", "./Build/GeometryDashLite.json", {
+  var gameInstance = UnityLoader.instantiate("gameContainer", "https://raw.githubusercontent.com/three-1415/gdl/refs/heads/main/Build/GeometryDashLite.json", {
     onProgress: UnityProgress
   });
 });
@@ -240,6 +240,7 @@ prepareGameAssets().then(() => {
     </div>
 </body>
 </html>
+
 
 
 
