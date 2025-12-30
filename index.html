@@ -111,6 +111,29 @@
         </div>
 
         <!-- BEGIN: UnityWebGL split/Blob/XHR patch -->
+        <script src="./Build/UnityLoader.js"></script>
+        <script>function UnityProgress(gameInstance, progress) {
+    if (!gameInstance.Module) return;
+
+    const loader = document.querySelector("#loader");
+
+    if (!gameInstance.progress) {
+        const progressEl = document.querySelector("#loader .progress");
+        progressEl.style.display = "block";
+        gameInstance.progress = progressEl.querySelector(".full");
+        loader.querySelector(".spinner").style.display = "none";
+    }
+
+    gameInstance.progress.style.transform = `scaleX(${progress})`;
+
+    if (progress === 1 && !gameInstance.removeTimeout) {
+        gameInstance.removeTimeout = setTimeout(() => {
+            loader.style.display = "none";
+        }, 2000);
+    }
+}
+        </script>
+        
         <script>
 window.mergedBlobUrls = {};
 
@@ -166,40 +189,17 @@ async function prepareGameAssets() {
     }
 }
 
-prepareGameAssets();
+prepareGameAssets().then(() => {
+  console.log("Instantiating UnityLoader...");
+  var gameInstance = UnityLoader.instantiate("gameContainer", "./Build/GeometryDashLite.json", {
+    onProgress: UnityProgress
+  });
+});
+
+
 </script>
 
         <!-- END PATCH -->
-
-        <script src="./Build/UnityLoader.js"></script>
-
-        <script>
-            var gameInstance = UnityLoader.instantiate("gameContainer", "./Build/GeometryDashLite.json", {
-                onProgress: UnityProgress
-            });
-
-            function UnityProgress(gameInstance, progress) {
-                if (!gameInstance.Module) return;
-
-                const loader = document.querySelector("#loader");
-
-                if (!gameInstance.progress) {
-                    const progressEl = document.querySelector("#loader .progress");
-                    progressEl.style.display = "block";
-                    gameInstance.progress = progressEl.querySelector(".full");
-                    loader.querySelector(".spinner").style.display = "none";
-                }
-
-                gameInstance.progress.style.transform = `scaleX(${progress})`;
-
-                if (progress === 1 && !gameInstance.removeTimeout) {
-                    gameInstance.removeTimeout = setTimeout(() => {
-                        loader.style.display = "none";
-                    }, 2000);
-                }
-            }
-        </script>
-
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 let buttons = document.getElementsByTagName('button');
@@ -240,5 +240,6 @@ prepareGameAssets();
     </div>
 </body>
 </html>
+
 
 
